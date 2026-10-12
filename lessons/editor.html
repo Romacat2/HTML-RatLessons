@@ -4,12 +4,12 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Редактор уроку - Roma's Rat Games</title>
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="../style.css">
 		<link rel="manifest" href="manifest.json">
 		<link rel="icon" href="favicon.png">
 		<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 		<meta name="theme-color" content="#121212">
-		<script src="nav.js"></script>
+		<script src="../nav.js"></script>
 		<script src="register-sw.js" defer></script>
 		<style>
 			.hero {
@@ -19,20 +19,20 @@
 				margin-left: auto;
 				margin-right: auto;
 			}
-
+			
 			.page-title {
 				font-size: clamp(1.8rem, 5vw, 2.4rem);
 				margin: 0;
 				text-align: center;
 			}
-
+			
 			.field-label {
 				font-size: 0.85rem;
 				opacity: 0.7;
 				margin-bottom: 0.3rem;
 				display: block;
 			}
-
+			
 			.title-input {
 				width: 100%;
 				font-size: 1.2rem;
@@ -44,17 +44,17 @@
 				font-family: inherit;
 				outline: none;
 			}
-
+			
 			.title-input:focus {
 				border-color: #4caf50;
 			}
-
+			
 			.exercise-list {
 				display: flex;
 				flex-direction: column;
 				gap: 1rem;
 			}
-
+			
 			.exercise-card {
 				border-radius: 16px;
 				border: 2px solid color-mix(in srgb, var(--text) 18%, transparent);
@@ -64,18 +64,18 @@
 				flex-direction: column;
 				gap: 0.8rem;
 			}
-
+			
 			.exercise-header {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 			}
-
+			
 			.exercise-number {
 				font-weight: 600;
 				opacity: 0.8;
 			}
-
+			
 			.exercise-remove {
 				background: none;
 				border: none;
@@ -86,13 +86,13 @@
 				padding: 0.2rem 0.5rem;
 				border-radius: 8px;
 			}
-
+			
 			.exercise-remove:hover,
 			.exercise-remove:focus-visible {
 				opacity: 1;
 				background: color-mix(in srgb, #ff5252 25%, transparent);
 			}
-
+			
 			.text-input {
 				width: 100%;
 				padding: 0.55rem 0.7rem;
@@ -104,17 +104,17 @@
 				font-size: 0.95rem;
 				outline: none;
 			}
-
+			
 			.text-input:focus {
 				border-color: #4caf50;
 			}
-
+			
 			.preview-chip {
 				font-size: 0.75rem;
 				opacity: 0.6;
 				margin-top: 0.2rem;
 			}
-
+			
 			.preview-img {
 				max-width: 100%;
 				max-height: 90px;
@@ -122,23 +122,23 @@
 				margin-top: 0.3rem;
 				display: block;
 			}
-
+			
 			.options-grid {
 				display: flex;
 				flex-direction: column;
 				gap: 0.6rem;
 			}
-
+			
 			.option-row {
 				display: flex;
 				align-items: center;
 				gap: 0.6rem;
 			}
-
+			
 			.option-row .text-input {
 				flex: 1;
 			}
-
+			
 			.correct-radio {
 				display: flex;
 				align-items: center;
@@ -148,13 +148,13 @@
 				white-space: nowrap;
 				cursor: pointer;
 			}
-
+			
 			.correct-radio input {
 				accent-color: #4caf50;
 				width: 16px;
 				height: 16px;
 			}
-
+			
 			.add-exercise-btn {
 				padding: 0.9rem;
 				border-radius: 14px;
@@ -166,12 +166,12 @@
 				font-size: 1rem;
 				font-weight: 600;
 			}
-
+			
 			.add-exercise-btn:hover,
 			.add-exercise-btn:focus-visible {
 				background: color-mix(in srgb, #4caf50 16%, transparent);
 			}
-
+			
 			.editor-actions {
 				display: flex;
 				gap: 1rem;
@@ -179,7 +179,7 @@
 				flex-wrap: wrap;
 				margin-top: 0.5rem;
 			}
-
+			
 			.save-error {
 				text-align: center;
 				color: #ff5252;
@@ -247,29 +247,29 @@
 					const card = document.createElement("div");
 					card.className = "exercise-card";
 					card.innerHTML = `
-						<div class="exercise-header">
-							<span class="exercise-number">Вправа ${i + 1}</span>
-							<button type="button" class="exercise-remove" data-remove-exercise="${i}" aria-label="Видалити вправу">✕</button>
+					<div class="exercise-header">
+					<span class="exercise-number">Вправа ${i + 1}</span>
+					<button type="button" class="exercise-remove" data-remove-exercise="${i}" aria-label="Видалити вправу">✕</button>
+					</div>
+					<div>
+					<label class="field-label">Питання (текст або URL картинки)</label>
+					<input type="text" class="text-input" data-question="${i}" placeholder="cat або https://..." value="${escapeAttr(ex.question)}">
+					<div class="preview-chip" data-question-preview="${i}"></div>
+					</div>
+					<div class="options-grid">
+					${ex.options.map((opt, j) => `
+						<div class="option-row">
+						<input type="text" class="text-input" data-option="${i}:${j}" placeholder="Варіант ${j + 1}" value="${escapeAttr(opt.value)}">
+						<label class="correct-radio">
+						<input type="radio" name="correct-${i}" data-correct="${i}:${j}" ${opt.correct ? "checked" : ""}>
+						вірно
+						</label>
 						</div>
-						<div>
-							<label class="field-label">Питання (текст або URL картинки)</label>
-							<input type="text" class="text-input" data-question="${i}" placeholder="cat або https://..." value="${escapeAttr(ex.question)}">
-							<div class="preview-chip" data-question-preview="${i}"></div>
+						`).join("")}
 						</div>
-						<div class="options-grid">
-							${ex.options.map((opt, j) => `
-								<div class="option-row">
-									<input type="text" class="text-input" data-option="${i}:${j}" placeholder="Варіант ${j + 1}" value="${escapeAttr(opt.value)}">
-									<label class="correct-radio">
-										<input type="radio" name="correct-${i}" data-correct="${i}:${j}" ${opt.correct ? "checked" : ""}>
-										вірно
-									</label>
-								</div>
-							`).join("")}
-						</div>
-					`;
-					exerciseListEl.appendChild(card);
-				});
+						`;
+						exerciseListEl.appendChild(card);
+					});
 				updateAllPreviews();
 			}
 
@@ -291,81 +291,81 @@
 						chip.textContent = "";
 					}
 				});
+		}
+
+		exerciseListEl.addEventListener("input", (e) => {
+			const target = e.target;
+			if (target.dataset.question !== undefined) {
+				const i = parseInt(target.dataset.question, 10);
+				lesson.exercises[i].question = target.value;
+				updateAllPreviews();
+			} else if (target.dataset.option !== undefined) {
+				const [i, j] = target.dataset.option.split(":").map(Number);
+				lesson.exercises[i].options[j].value = target.value;
 			}
+		});
 
-			exerciseListEl.addEventListener("input", (e) => {
-				const target = e.target;
-				if (target.dataset.question !== undefined) {
-					const i = parseInt(target.dataset.question, 10);
-					lesson.exercises[i].question = target.value;
-					updateAllPreviews();
-				} else if (target.dataset.option !== undefined) {
-					const [i, j] = target.dataset.option.split(":").map(Number);
-					lesson.exercises[i].options[j].value = target.value;
-				}
+	exerciseListEl.addEventListener("change", (e) => {
+		const target = e.target;
+		if (target.dataset.correct !== undefined) {
+			const [i, j] = target.dataset.correct.split(":").map(Number);
+			lesson.exercises[i].options.forEach((opt, k) => {
+				opt.correct = k === j;
 			});
+	}
+});
 
-			exerciseListEl.addEventListener("change", (e) => {
-				const target = e.target;
-				if (target.dataset.correct !== undefined) {
-					const [i, j] = target.dataset.correct.split(":").map(Number);
-					lesson.exercises[i].options.forEach((opt, k) => {
-						opt.correct = k === j;
-					});
-				}
-			});
+exerciseListEl.addEventListener("click", (e) => {
+	const removeBtn = e.target.closest("[data-remove-exercise]");
+	if (!removeBtn) return;
+	const i = parseInt(removeBtn.dataset.removeExercise, 10);
+	if (lesson.exercises.length <= 1) {
+		saveErrorEl.textContent = "В уроці має лишитись хоча б одна вправа.";
+		return;
+	}
+	lesson.exercises.splice(i, 1);
+	renderExercises();
+});
 
-			exerciseListEl.addEventListener("click", (e) => {
-				const removeBtn = e.target.closest("[data-remove-exercise]");
-				if (!removeBtn) return;
-				const i = parseInt(removeBtn.dataset.removeExercise, 10);
-				if (lesson.exercises.length <= 1) {
-					saveErrorEl.textContent = "В уроці має лишитись хоча б одна вправа.";
-					return;
-				}
-				lesson.exercises.splice(i, 1);
-				renderExercises();
-			});
+addExerciseBtn.addEventListener("click", () => {
+	lesson.exercises.push(LessonsStore.createEmptyExercise());
+	renderExercises();
+	exerciseListEl.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
+});
 
-			addExerciseBtn.addEventListener("click", () => {
-				lesson.exercises.push(LessonsStore.createEmptyExercise());
-				renderExercises();
-				exerciseListEl.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
-			});
+function validate() {
+	if (!lessonTitleEl.value.trim()) {
+		return "Введи назву уроку.";
+	}
+	for (let i = 0; i < lesson.exercises.length; i++) {
+		const ex = lesson.exercises[i];
+		if (!ex.question.trim()) {
+			return `Вправа ${i + 1}: заповни питання.`;
+		}
+		if (ex.options.some((o) => !o.value.trim())) {
+			return `Вправа ${i + 1}: заповни всі 3 варіанти відповіді.`;
+		}
+		if (!ex.options.some((o) => o.correct)) {
+			return `Вправа ${i + 1}: познач, який варіант правильний.`;
+		}
+	}
+	return null;
+}
 
-			function validate() {
-				if (!lessonTitleEl.value.trim()) {
-					return "Введи назву уроку.";
-				}
-				for (let i = 0; i < lesson.exercises.length; i++) {
-					const ex = lesson.exercises[i];
-					if (!ex.question.trim()) {
-						return `Вправа ${i + 1}: заповни питання.`;
-					}
-					if (ex.options.some((o) => !o.value.trim())) {
-						return `Вправа ${i + 1}: заповни всі 3 варіанти відповіді.`;
-					}
-					if (!ex.options.some((o) => o.correct)) {
-						return `Вправа ${i + 1}: познач, який варіант правильний.`;
-					}
-				}
-				return null;
-			}
+saveBtn.addEventListener("click", (e) => {
+	e.preventDefault();
+	lesson.title = lessonTitleEl.value.trim();
+	const error = validate();
+	if (error) {
+		saveErrorEl.textContent = error;
+		return;
+	}
+	saveErrorEl.textContent = "";
+	LessonsStore.upsert(lesson);
+	location.href = "index.html";
+});
 
-			saveBtn.addEventListener("click", (e) => {
-				e.preventDefault();
-				lesson.title = lessonTitleEl.value.trim();
-				const error = validate();
-				if (error) {
-					saveErrorEl.textContent = error;
-					return;
-				}
-				saveErrorEl.textContent = "";
-				LessonsStore.upsert(lesson);
-				location.href = "index.html";
-			});
-
-			renderExercises();
+renderExercises();
 		</script>
 	</body>
 </html>

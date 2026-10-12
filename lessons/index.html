@@ -4,12 +4,12 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Roma's Rat Games - Уроки</title>
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="../style.css">
 		<link rel="manifest" href="manifest.json">
 		<link rel="icon" href="favicon.png">
 		<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 		<meta name="theme-color" content="#121212">
-		<script src="nav.js"></script>
+		<script src="../nav.js"></script>
 		<script src="register-sw.js" defer></script>
 		<style>
 			.hero {
@@ -17,14 +17,14 @@
 				align-items: stretch;
 				max-width: 100%;
 			}
-
+			
 			.page-title {
 				font-size: clamp(2rem, 6vw, 3rem);
 				line-height: 1.1;
 				margin: 0;
 				text-align: center;
 			}
-
+			
 			.carousel {
 				display: flex;
 				gap: 1.2rem;
@@ -33,16 +33,16 @@
 				scroll-snap-type: x mandatory;
 				-webkit-overflow-scrolling: touch;
 			}
-
+			
 			.carousel::-webkit-scrollbar {
 				height: 8px;
 			}
-
+			
 			.carousel::-webkit-scrollbar-thumb {
 				background: color-mix(in srgb, var(--text) 25%, transparent);
 				border-radius: 4px;
 			}
-
+			
 			.lesson-card {
 				flex: 0 0 auto;
 				width: 220px;
@@ -51,7 +51,7 @@
 				flex-direction: column;
 				gap: 0.6rem;
 			}
-
+			
 			.lesson-card-main {
 				width: 100%;
 				height: 220px;
@@ -70,34 +70,34 @@
 				text-align: center;
 				transition: transform 0.15s ease, background 0.2s ease;
 			}
-
+			
 			.lesson-card-main:hover,
 			.lesson-card-main:focus-visible {
 				transform: translateY(-4px);
 				background: color-mix(in srgb, var(--text) 14%, transparent);
 			}
-
+			
 			.lesson-emoji {
 				font-size: 2.6rem;
 			}
-
+			
 			.lesson-name {
 				font-size: 1.05rem;
 				font-weight: 600;
 				overflow-wrap: anywhere;
 			}
-
+			
 			.lesson-count {
 				font-size: 0.8rem;
 				opacity: 0.65;
 			}
-
+			
 			.lesson-actions {
 				display: flex;
 				gap: 0.5rem;
 				justify-content: center;
 			}
-
+			
 			.lesson-action-btn {
 				flex: 1;
 				padding: 0.5rem 0;
@@ -110,34 +110,34 @@
 				font-family: inherit;
 				transition: background 0.15s ease;
 			}
-
+			
 			.lesson-action-btn:hover,
 			.lesson-action-btn:focus-visible {
 				background: color-mix(in srgb, var(--text) 18%, transparent);
 			}
-
+			
 			.lesson-action-btn.delete:hover,
 			.lesson-action-btn.delete:focus-visible {
 				background: color-mix(in srgb, #ff5252 35%, transparent);
 			}
-
+			
 			.add-card .lesson-card-main {
 				border-style: dashed;
 				border-color: color-mix(in srgb, #4caf50 60%, transparent);
 				background: color-mix(in srgb, #4caf50 10%, transparent);
 			}
-
+			
 			.add-card .lesson-card-main:hover,
 			.add-card .lesson-card-main:focus-visible {
 				background: color-mix(in srgb, #4caf50 18%, transparent);
 			}
-
+			
 			.add-plus {
 				font-size: 3.2rem;
 				line-height: 1;
 				color: #4caf50;
 			}
-
+			
 			.empty-hint {
 				text-align: center;
 				opacity: 0.6;
@@ -181,57 +181,57 @@
 					const card = document.createElement("div");
 					card.className = "lesson-card";
 					card.innerHTML = `
-						<button class="lesson-card-main" data-start="${lesson.id}">
-							<span class="lesson-emoji">📘</span>
-							<span class="lesson-name">${escapeHtml(lesson.title || "Без назви")}</span>
-							<span class="lesson-count">${lesson.exercises.length} вправ</span>
-						</button>
-						<div class="lesson-actions">
-							<button class="lesson-action-btn" data-edit="${lesson.id}" title="Редагувати" aria-label="Редагувати">✏️</button>
-							<button class="lesson-action-btn delete" data-delete="${lesson.id}" title="Видалити" aria-label="Видалити">🗑️</button>
-						</div>
+					<button class="lesson-card-main" data-start="${lesson.id}">
+					<span class="lesson-emoji">📘</span>
+					<span class="lesson-name">${escapeHtml(lesson.title || "Без назви")}</span>
+					<span class="lesson-count">${lesson.exercises.length} вправ</span>
+					</button>
+					<div class="lesson-actions">
+					<button class="lesson-action-btn" data-edit="${lesson.id}" title="Редагувати" aria-label="Редагувати">✏️</button>
+					<button class="lesson-action-btn delete" data-delete="${lesson.id}" title="Видалити" aria-label="Видалити">🗑️</button>
+					</div>
 					`;
 					carouselEl.appendChild(card);
 				});
 
-				const addCard = document.createElement("div");
-				addCard.className = "lesson-card add-card";
-				addCard.innerHTML = `
-					<button class="lesson-card-main" data-add="1">
-						<span class="add-plus">+</span>
-						<span class="lesson-name">Новий урок</span>
-					</button>
-					<div class="lesson-actions" style="visibility:hidden;">
-						<button class="lesson-action-btn">·</button>
-					</div>
-				`;
-				carouselEl.appendChild(addCard);
-			}
+			const addCard = document.createElement("div");
+			addCard.className = "lesson-card add-card";
+			addCard.innerHTML = `
+			<button class="lesson-card-main" data-add="1">
+			<span class="add-plus">+</span>
+			<span class="lesson-name">Новий урок</span>
+			</button>
+			<div class="lesson-actions" style="visibility:hidden;">
+			<button class="lesson-action-btn">·</button>
+			</div>
+			`;
+			carouselEl.appendChild(addCard);
+		}
 
-			carouselEl.addEventListener("click", (e) => {
-				const startBtn = e.target.closest("[data-start]");
-				const editBtn = e.target.closest("[data-edit]");
-				const deleteBtn = e.target.closest("[data-delete]");
-				const addBtn = e.target.closest("[data-add]");
+		carouselEl.addEventListener("click", (e) => {
+			const startBtn = e.target.closest("[data-start]");
+			const editBtn = e.target.closest("[data-edit]");
+			const deleteBtn = e.target.closest("[data-delete]");
+			const addBtn = e.target.closest("[data-add]");
 
-				if (startBtn) {
-					location.href = `test.html?lesson=${encodeURIComponent(startBtn.dataset.start)}`;
-				} else if (editBtn) {
-					location.href = `editor.html?lesson=${encodeURIComponent(editBtn.dataset.edit)}`;
-				} else if (deleteBtn) {
-					const id = deleteBtn.dataset.delete;
-					const lesson = LessonsStore.getById(id);
-					const name = lesson ? lesson.title || "Без назви" : "цей урок";
-					if (confirm(`Видалити урок «${name}»? Цю дію не можна скасувати.`)) {
-						LessonsStore.remove(id);
-						render();
-					}
-				} else if (addBtn) {
-					location.href = "editor.html";
+			if (startBtn) {
+				location.href = `test.html?lesson=${encodeURIComponent(startBtn.dataset.start)}`;
+			} else if (editBtn) {
+				location.href = `editor.html?lesson=${encodeURIComponent(editBtn.dataset.edit)}`;
+			} else if (deleteBtn) {
+				const id = deleteBtn.dataset.delete;
+				const lesson = LessonsStore.getById(id);
+				const name = lesson ? lesson.title || "Без назви" : "цей урок";
+				if (confirm(`Видалити урок «${name}»? Цю дію не можна скасувати.`)) {
+					LessonsStore.remove(id);
+					render();
 				}
-			});
+			} else if (addBtn) {
+				location.href = "editor.html";
+			}
+		});
 
-			render();
+	render();
 		</script>
 	</body>
 </html>

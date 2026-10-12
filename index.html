@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="uk">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Roma's Rat Games - Навчання</title>
+		<link rel="stylesheet" href="style.css">
+		<link rel="icon" href="multiplication/favicon.png">
+		<script src="nav.js"></script>
+		<style>
+			.hero {
+				margin-top: -1rem;
+				align-items: stretch;
+				max-width: 100%;
+			}
+			
+			.page-title {
+				font-size: clamp(2rem, 6vw, 3rem);
+				line-height: 1.1;
+				margin: 0;
+				text-align: center;
+			}
+			
+			.carousel {
+				display: flex;
+				gap: 1.2rem;
+				overflow-x: auto;
+				padding: 1.5rem 1rem 1rem;
+				scroll-snap-type: x mandatory;
+				-webkit-overflow-scrolling: touch;
+				justify-content: center;
+				flex-wrap: wrap;
+			}
+			
+			.carousel::-webkit-scrollbar {
+				height: 8px;
+			}
+			
+			.carousel::-webkit-scrollbar-thumb {
+				background: color-mix(in srgb, var(--text) 25%, transparent);
+				border-radius: 4px;
+			}
+			
+			.game-card {
+				flex: 0 0 auto;
+				width: 220px;
+				scroll-snap-align: start;
+				display: flex;
+				flex-direction: column;
+				gap: 0.6rem;
+			}
+			
+			.game-card-main {
+				width: 100%;
+				height: 220px;
+				border-radius: 18px;
+				border: 2px solid color-mix(in srgb, var(--text) 25%, transparent);
+				background: color-mix(in srgb, var(--text) 8%, transparent);
+				color: var(--text);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 0.7rem;
+				cursor: pointer;
+				font-family: inherit;
+				padding: 1rem;
+				text-align: center;
+				text-decoration: none;
+				transition: transform 0.15s ease, background 0.2s ease;
+			}
+			
+			.game-card-main:hover,
+			.game-card-main:focus-visible {
+				transform: translateY(-4px);
+				background: color-mix(in srgb, var(--text) 14%, transparent);
+			}
+			
+			.game-icon {
+				width: 76px;
+				height: 76px;
+				object-fit: contain;
+				border-radius: 16px;
+			}
+			
+			.game-name {
+				font-size: 1.05rem;
+				font-weight: 600;
+			}
+			
+			.game-desc {
+				font-size: 0.8rem;
+				opacity: 0.65;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<div></div>
+			<app-nav></app-nav>
+		</nav>
+		<div class="main-content">
+			<div class="hero">
+				<p class="hero-text" style="font-size: clamp(1.4rem, 3vw, 1.8rem);">🐀 Roma's Rat Games</p>
+				<h1 class="page-title">Обери гру</h1>
+
+				<div class="carousel">
+					<a href="multiplication/index.html" class="game-card">
+						<div class="game-card-main">
+							<img class="game-icon" src="multiplication/icons/icon-512.png" alt="">
+							<span class="game-name">Табличка множення</span>
+							<span class="game-desc">Тест на швидкість, 3 життя</span>
+						</div>
+					</a>
+
+					<a href="lessons/index.html" class="game-card">
+						<div class="game-card-main">
+							<img class="game-icon" src="lessons/icons/icon-512.png" alt="">
+							<span class="game-name">Уроки</span>
+							<span class="game-desc">Власні уроки-флешкартки</span>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -4,24 +4,24 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Результат - Roma's Rat Games</title>
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="../style.css">
 		<link rel="manifest" href="manifest.json">
 		<link rel="icon" href="favicon.png">
 		<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 		<meta name="theme-color" content="#121212">
-		<script src="nav.js"></script>
+		<script src="../nav.js"></script>
 		<script src="register-sw.js" defer></script>
 		<style>
 			.hero {
 				margin-top: -2rem;
 				gap: 1.2rem;
 			}
-
+			
 			.result-emoji {
 				font-size: clamp(3.5rem, 12vw, 5.5rem);
 				line-height: 1;
 			}
-
+			
 			.stats {
 				display: flex;
 				gap: 1.5rem;
@@ -29,7 +29,7 @@
 				justify-content: center;
 				margin-top: 0.5rem;
 			}
-
+			
 			.stat-card {
 				display: flex;
 				flex-direction: column;
@@ -40,17 +40,17 @@
 				background: color-mix(in srgb, var(--text) 8%, transparent);
 				min-width: 140px;
 			}
-
+			
 			.stat-value {
 				font-size: clamp(1.8rem, 5vw, 2.4rem);
 				font-weight: 700;
 			}
-
+			
 			.stat-label {
 				font-size: 0.85rem;
 				opacity: 0.7;
 			}
-
+			
 			.actions {
 				display: flex;
 				gap: 1rem;
@@ -106,7 +106,7 @@
 			const minutes = Math.floor(timeSec / 60);
 			const seconds = timeSec % 60;
 			document.getElementById("timeValue").textContent =
-				minutes > 0 ? `${minutes}хв ${seconds}с` : `${seconds}с`;
+			minutes > 0 ? `${minutes}хв ${seconds}с` : `${seconds}с`;
 
 			// Емодзі залежить і від точності (% правильних), і від абсолютної
 			// кількості — щоб короткий урок без жодної помилки теж міг дати 🏆,
