@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="uk">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Тест - Roma's Rat Games</title>
+		<link rel="stylesheet" href="style.css">
+		<link rel="manifest" href="manifest.json">
+		<link rel="icon" href="favicon.png">
+		<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+		<meta name="theme-color" content="#121212">
+		<script src="nav.js"></script>
+		<script src="register-sw.js" defer></script>
+		<style>
+			/* Висота nav приблизно стала — використовуємо як базу для розрахунку
+			доступного простору, щоб .hero завжди вписувався в екран без скролу
+			і без втраченого простору знизу. */
+			:root {
+				--nav-h: 4.5rem;
+			}
+			
+			html, body {
+				height: 100%;
+				overflow: hidden;
+			}
+			
+			.main-content {
+				height: calc(100vh - var(--nav-h));
+				height: calc(100svh - var(--nav-h));
+				padding: 0 1rem;
+				display: flex;
+			}
+			
+			.hero {
+				margin-top: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: space-evenly;
+				padding: 0.5rem 0;
+				gap: 0;
+			}
+			
+			.hearts {
+				font-size: clamp(1.2rem, 4vh, 2.2rem);
+				letter-spacing: 0.3rem;
+				flex: 0 0 auto;
+			}
+			
+			.heart-lost {
+				opacity: 0.25;
+				filter: grayscale(1);
+			}
+			
+			.problem-wrap {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 0.5em;
+				flex: 1 1 auto;
+				min-height: 0;
+			}
+			
+			.problem {
+				font-size: clamp(1.8rem, 7vh, 3.4rem);
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+			
+			.answer-input {
+				width: 3.4ch;
+				font-size: inherit;
+				text-align: center;
+				background: transparent;
+				border: none;
+				border-bottom: 3px solid var(--text);
+				color: var(--text);
+				font-family: inherit;
+				outline: none;
+				caret-color: transparent;
+			}
+			
+			.feedback {
+				font-size: clamp(1.1rem, 3.5vh, 1.8rem);
+				height: 1.3em;
+				display: flex;
+				align-items: center;
+				gap: 0.6rem;
+				opacity: 0;
+				transition: opacity 0.1s ease;
+			}
+			
+			.feedback.show {
+				opacity: 1;
+			}
+			
+			.feedback .wrong-answer {
+				font-size: 0.75em;
+				opacity: 0.8;
+			}
+			
+			.keypad {
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				gap: 1.5%;
+				width: min(100%, 420px);
+				height: 42vh;
+				max-height: 320px;
+				flex: 0 0 auto;
+			}
+			
+			.key {
+				font-size: clamp(1rem, 4vh, 1.6rem);
+				border-radius: 12px;
+				border: none;
+				background: color-mix(in srgb, var(--text) 10%, transparent);
+				color: var(--text);
+				cursor: pointer;
+				font-family: inherit;
+				transition: background 0.15s ease, transform 0.1s ease;
+				user-select: none;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			
+			.key:hover,
+			.key:focus-visible {
+				background: color-mix(in srgb, var(--text) 18%, transparent);
+			}
+			
+			.key:active {
+				transform: scale(0.94);
+			}
+			
+			.key.key-enter {
+				background: color-mix(in srgb, #4caf50 35%, transparent);
+			}
+			
+			.key.key-clear {
+				background: color-mix(in srgb, #ff5252 25%, transparent);
+				font-size: clamp(0.8rem, 2.8vh, 1.2rem);
+			}
+			
+			.level-tag {
+				font-size: clamp(0.75rem, 2vh, 0.85rem);
+				opacity: 0.6;
+				text-transform: lowercase;
+				flex: 0 0 auto;
+			}
+			
+			@media (max-height: 500px) {
+				.keypad {
+					height: 50vh;
+				}
+			}
+			
+			.timer {
+				position: fixed;
+				top: 1rem;
+				left: 1rem;
+				font-size: clamp(1rem, 3.5vh, 1.4rem);
+				font-weight: 700;
+				padding: 0.3rem 0.7rem;
+				border-radius: 10px;
+				background: color-mix(in srgb, var(--text) 10%, transparent);
+				z-index: 200;
+				font-variant-numeric: tabular-nums;
+			}
+			
+			.timer.low {
+				color: #ff5252;
+			}
+			
+			.rat-rain {
+				position: fixed;
+				inset: 0;
+				pointer-events: none;
+				overflow: hidden;
+				z-index: 999;
+			}
+			
+			.rat-drop {
+				position: absolute;
+				top: -10vh;
+				font-size: var(--rat-size, 1.8rem);
+				animation: rat-fall var(--rat-duration, 1.4s) linear forwards;
+				animation-delay: var(--rat-delay, 0s);
+			}
+			
+			@keyframes rat-fall {
+				from {
+					transform: translateY(0) rotate(0deg);
+					opacity: 1;
+				}
+				to {
+					transform: translateY(120vh) rotate(25deg);
+					opacity: 0.9;
+				}
+			}
+			
+			@media (prefers-reduced-motion: reduce) {
+				.rat-drop {
+					animation: none;
+					display: none;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<div></div>
+			<app-nav></app-nav>
+		</nav>
+		<div class="rat-rain" id="ratRain"></div>
+		<div class="timer" id="timer">60 с</div>
+		<div class="main-content">
+			<div class="hero">
+				<p class="level-tag" id="levelTag"></p>
+				<div class="hearts" id="hearts">❤️❤️❤️</div>
+
+				<div class="problem-wrap">
+					<div class="problem">
+						<span id="factorA">?</span>
+						<span>×</span>
+						<span id="factorB">?</span>
+						<span>=</span>
+						<input type="text"
+						       inputmode="numeric"
+						       class="answer-input"
+						       id="answerInput"
+						       readonly
+						       value=""
+						>
+					</div>
+					<div class="feedback" id="feedback"></div>
+				</div>
+
+				<div class="keypad" id="keypad">
+					<button class="key" data-key="1">1</button>
+					<button class="key" data-key="2">2</button>
+					<button class="key" data-key="3">3</button>
+					<button class="key" data-key="4">4</button>
+					<button class="key" data-key="5">5</button>
+					<button class="key" data-key="6">6</button>
+					<button class="key" data-key="7">7</button>
+					<button class="key" data-key="8">8</button>
+					<button class="key" data-key="9">9</button>
+					<button class="key key-clear" data-key="clear">Стерти</button>
+					<button class="key" data-key="0">0</button>
+					<button class="key key-enter" data-key="enter">Enter</button>
+				</div>
+			</div>
+		</div>
+
+		<script src="test.js"></script>
+	</body>
+</html>

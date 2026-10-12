@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="uk">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Результат - Roma's Rat Games</title>
+		<link rel="stylesheet" href="style.css">
+		<link rel="manifest" href="manifest.json">
+		<link rel="icon" href="favicon.png">
+		<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+		<meta name="theme-color" content="#121212">
+		<script src="nav.js"></script>
+		<script src="register-sw.js" defer></script>
+		<style>
+			.hero {
+				margin-top: -2rem;
+				gap: 1.2rem;
+			}
+
+			.result-emoji {
+				font-size: clamp(3.5rem, 12vw, 5.5rem);
+				line-height: 1;
+			}
+
+			.stats {
+				display: flex;
+				gap: 1.5rem;
+				flex-wrap: wrap;
+				justify-content: center;
+				margin-top: 0.5rem;
+			}
+
+			.stat-card {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 0.3rem;
+				padding: 1.2rem 1.6rem;
+				border-radius: 16px;
+				background: color-mix(in srgb, var(--text) 8%, transparent);
+				min-width: 140px;
+			}
+
+			.stat-value {
+				font-size: clamp(1.8rem, 5vw, 2.4rem);
+				font-weight: 700;
+			}
+
+			.stat-label {
+				font-size: 0.85rem;
+				opacity: 0.7;
+			}
+
+			.actions {
+				display: flex;
+				gap: 1rem;
+				flex-wrap: wrap;
+				justify-content: center;
+				margin-top: 1rem;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<div></div>
+			<app-nav></app-nav>
+		</nav>
+		<div class="main-content">
+			<div class="hero">
+				<div class="result-emoji" id="resultEmoji">🏁</div>
+				<p class="hero-text" style="font-size: clamp(1.4rem, 3vw, 1.8rem);">Тест завершено!</p>
+
+				<div class="stats">
+					<div class="stat-card">
+						<span class="stat-value" id="correctValue">0</span>
+						<span class="stat-label">правильних відповідей</span>
+					</div>
+					<div class="stat-card">
+						<span class="stat-value" id="timeValue">0с</span>
+						<span class="stat-label">загальний час</span>
+					</div>
+				</div>
+
+				<div class="actions">
+					<a href="#" id="retryBtn" class="csharp-btn" style="background:#4caf50">↻ Заново</a>
+					<a href="index.html" class="csharp-btn" style="background:#888">← На головну</a>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			const params = new URLSearchParams(location.search);
+			const correct = parseInt(params.get("correct") || "0", 10);
+			const timeSec = parseInt(params.get("time") || "0", 10);
+			const level = params.get("level") || "medium";
+
+			document.getElementById("correctValue").textContent = correct;
+
+			const minutes = Math.floor(timeSec / 60);
+			const seconds = timeSec % 60;
+			document.getElementById("timeValue").textContent =
+				minutes > 0 ? `${minutes}хв ${seconds}с` : `${seconds}с`;
+
+			const emoji = correct >= 15 ? "🏆" : correct >= 8 ? "🎉" : correct >= 3 ? "🙂" : "🐣";
+			document.getElementById("resultEmoji").textContent = emoji;
+
+			document.getElementById("retryBtn").href = `test.html?level=${encodeURIComponent(level)}`;
+		</script>
+	</body>
+</html>

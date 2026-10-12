@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="uk">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Roma's Rat Games - Табличка множення</title>
+		<link rel="stylesheet" href="style.css">
+		<link rel="manifest" href="manifest.json">
+		<link rel="icon" href="favicon.png">
+		<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+		<meta name="theme-color" content="#121212">
+		<script src="nav.js"></script>
+		<script src="register-sw.js" defer></script>
+		<style>
+			.hero {
+				margin-top: -1rem;
+			}
+			
+			.level-title {
+				font-size: clamp(2.2rem, 6vw, 3.2rem);
+				line-height: 1.1;
+				margin: 0;
+			}
+			
+			.level-grid {
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				gap: 1rem;
+				width: 100%;
+				max-width: 720px;
+				margin-top: 0.5rem;
+			}
+			
+			.level-card {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 0.6rem;
+				padding: 1.6rem 1rem;
+				border-radius: 16px;
+				border: 2px solid var(--level-color, #888);
+				background: color-mix(in srgb, var(--level-color, #888) 12%, transparent);
+				color: var(--text);
+				cursor: pointer;
+				transition: transform 0.15s ease, background 0.2s ease;
+				font-family: inherit;
+			}
+			
+			.level-card:hover,
+			.level-card:focus-visible {
+				transform: translateY(-4px);
+				background: color-mix(in srgb, var(--level-color, #888) 22%, transparent);
+			}
+			
+			.level-emoji {
+				font-size: clamp(2rem, 6vw, 2.6rem);
+			}
+			
+			.level-name {
+				font-size: clamp(1rem, 3vw, 1.3rem);
+				font-weight: 600;
+			}
+			
+			.level-range {
+				font-size: 0.85rem;
+				opacity: 0.75;
+			}
+			
+			@media (max-width: 560px) {
+				.level-grid {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<div></div>
+			<app-nav></app-nav>
+		</nav>
+		<div class="main-content">
+			<div class="hero">
+				<p class="hero-text" style="font-size: clamp(1.4rem, 3vw, 1.8rem);">🐀 Табличка множення</p>
+				<p class="hero-text">3 ❤️ - 3 помилки</p>
+				<p class="hero-text">⏱️ 60 секунд на все</p>
+
+				<div class="level-grid">
+					<button class="level-card" style="--level-color:#4caf50" onclick="location.href='test.html?level=easy'">
+						<span class="level-emoji">🐣</span>
+						<span class="level-name">Легкий</span>
+						<span class="level-range">2 – 4</span>
+					</button>
+					<button class="level-card" style="--level-color:#ffb300" onclick="location.href='test.html?level=medium'">
+						<span class="level-emoji">🐥</span>
+						<span class="level-name">Середній</span>
+						<span class="level-range">3 – 7</span>
+					</button>
+					<button class="level-card" style="--level-color:#ff5252" onclick="location.href='test.html?level=hard'">
+						<span class="level-emoji">🐉</span>
+						<span class="level-name">Важкий</span>
+						<span class="level-range">6 – 9</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
