@@ -103,11 +103,64 @@ app-nav nav {
     border-radius: 10px;
     color: white;
     font-weight: 600;
-    transition: transform 0.15s ease, filter 0.15s ease;
+    transition:
+        transform 0.15s ease,
+        filter 0.15s ease;
 }
 
 .csharp-btn:hover,
 .csharp-btn:focus-visible {
     transform: translateY(-2px);
     filter: brightness(1.1);
+}
+
+/* Життя/серця — спільні для всіх ігор з 3 життями (множення, уроки,
+   встав літеру). Розмір підлаштовується viewport-висотою, бо серця
+   зазвичай живуть на екрані проходження гри (full-height, без скролу). */
+.hearts {
+    font-size: clamp(1.2rem, 4vh, 2.2rem);
+    letter-spacing: 0.3rem;
+    flex: 0 0 auto;
+}
+
+.heart-lost {
+    opacity: 0.25;
+    filter: grayscale(1);
+}
+
+/* Дощ з пацюків — спільна анімація при правильній відповіді.
+   Контейнер .rat-rain має бути position: fixed поверх усього інтерфейсу;
+   наповнюється елементами .rat-drop через rat-rain.js (spawnRatRain). */
+.rat-rain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 999;
+}
+
+.rat-drop {
+    position: absolute;
+    top: -10vh;
+    font-size: var(--rat-size, 1.8rem);
+    animation: rat-fall var(--rat-duration, 1.4s) linear forwards;
+    animation-delay: var(--rat-delay, 0s);
+}
+
+@keyframes rat-fall {
+    from {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(120vh) rotate(25deg);
+        opacity: 0.9;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rat-drop {
+        animation: none;
+        display: none;
+    }
 }

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="uk">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Редактор уроку - Roma's Rat Games</title>
+		<link rel="stylesheet" href="../style.css">
+		<link rel="manifest" href="../manifest.json">
+		<link rel="icon" href="favicon.png">
+		<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+		<meta name="theme-color" content="#121212">
+		<script src="../nav.js"></script>
+		<script src="../register-sw.js" defer></script>
+		<style>
+			.hero {
+				margin-top: -1rem;
+				align-items: stretch;
+				max-width: 640px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			
+			.page-title {
+				font-size: clamp(1.8rem, 5vw, 2.4rem);
+				margin: 0;
+				text-align: center;
+			}
+			
+			.field-label {
+				font-size: 0.85rem;
+				opacity: 0.7;
+				margin-bottom: 0.3rem;
+				display: block;
+			}
+			
+			.title-input {
+				width: 100%;
+				font-size: 1.2rem;
+				padding: 0.7rem 0.9rem;
+				border-radius: 10px;
+				border: 2px solid color-mix(in srgb, var(--text) 20%, transparent);
+				background: color-mix(in srgb, var(--text) 6%, transparent);
+				color: var(--text);
+				font-family: inherit;
+				outline: none;
+			}
+			
+			.title-input:focus {
+				border-color: #4caf50;
+			}
+			
+			.sentence-list {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+			}
+			
+			.sentence-card {
+				border-radius: 16px;
+				border: 2px solid color-mix(in srgb, var(--text) 18%, transparent);
+				background: color-mix(in srgb, var(--text) 5%, transparent);
+				padding: 1rem;
+				display: flex;
+				flex-direction: column;
+				gap: 0.8rem;
+			}
+			
+			.sentence-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			
+			.sentence-number {
+				font-weight: 600;
+				opacity: 0.8;
+			}
+			
+			.sentence-remove {
+				background: none;
+				border: none;
+				color: var(--text);
+				opacity: 0.6;
+				cursor: pointer;
+				font-size: 1.2rem;
+				padding: 0.2rem 0.5rem;
+				border-radius: 8px;
+			}
+			
+			.sentence-remove:hover,
+			.sentence-remove:focus-visible {
+				opacity: 1;
+				background: color-mix(in srgb, #ff5252 25%, transparent);
+			}
+			
+			.text-input {
+				width: 100%;
+				padding: 0.55rem 0.7rem;
+				border-radius: 8px;
+				border: 1.5px solid color-mix(in srgb, var(--text) 20%, transparent);
+				background: color-mix(in srgb, var(--text) 4%, transparent);
+				color: var(--text);
+				font-family: inherit;
+				font-size: 0.95rem;
+				outline: none;
+			}
+			
+			.text-input:focus {
+				border-color: #4caf50;
+			}
+			
+			.blanks-hint {
+				font-size: 0.78rem;
+				opacity: 0.6;
+			}
+			
+			.char-grid {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.3rem;
+			}
+			
+			.char-tile {
+				min-width: 1.8rem;
+				height: 1.8rem;
+				padding: 0 0.2rem;
+				border-radius: 6px;
+				border: 1.5px solid color-mix(in srgb, var(--text) 20%, transparent);
+				background: color-mix(in srgb, var(--text) 4%, transparent);
+				color: var(--text);
+				font-family: inherit;
+				font-size: 0.95rem;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transition: background 0.15s ease, border-color 0.15s ease;
+				user-select: none;
+			}
+			
+			.char-tile:hover,
+			.char-tile:focus-visible {
+				border-color: color-mix(in srgb, var(--text) 45%, transparent);
+			}
+			
+			.char-tile.is-space {
+				opacity: 0.5;
+				font-size: 0.7rem;
+			}
+			
+			.char-tile.is-blank {
+				border-color: #4caf50;
+				background: color-mix(in srgb, #4caf50 30%, transparent);
+				opacity: 1;
+			}
+			
+			.preview-line {
+				font-size: 0.95rem;
+				padding: 0.5rem 0.7rem;
+				border-radius: 8px;
+				background: color-mix(in srgb, var(--text) 4%, transparent);
+				opacity: 0.75;
+				overflow-wrap: anywhere;
+			}
+			
+			.add-sentence-btn {
+				padding: 0.9rem;
+				border-radius: 14px;
+				border: 2px dashed color-mix(in srgb, #4caf50 60%, transparent);
+				background: color-mix(in srgb, #4caf50 8%, transparent);
+				color: var(--text);
+				cursor: pointer;
+				font-family: inherit;
+				font-size: 1rem;
+				font-weight: 600;
+			}
+			
+			.add-sentence-btn:hover,
+			.add-sentence-btn:focus-visible {
+				background: color-mix(in srgb, #4caf50 16%, transparent);
+			}
+			
+			.editor-actions {
+				display: flex;
+				gap: 1rem;
+				justify-content: center;
+				flex-wrap: wrap;
+				margin-top: 0.5rem;
+			}
+			
+			.save-error {
+				text-align: center;
+				color: #ff5252;
+				font-size: 0.9rem;
+				min-height: 1.3em;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<div></div>
+			<app-nav></app-nav>
+		</nav>
+		<div class="main-content">
+			<div class="hero">
+				<h1 class="page-title" id="pageTitle">Новий урок</h1>
+
+				<div>
+					<label class="field-label" for="lessonTitle">Назва уроку</label>
+					<input type="text" id="lessonTitle" class="title-input" placeholder="Наприклад: Апостроф">
+				</div>
+
+				<div class="sentence-list" id="sentenceList"></div>
+
+				<button class="add-sentence-btn" id="addSentenceBtn" type="button">+ Додати речення</button>
+
+				<p class="save-error" id="saveError"></p>
+
+				<div class="editor-actions">
+					<a href="#" class="csharp-btn" style="background:#4caf50" id="saveBtn">💾 Зберегти урок</a>
+					<a href="index.html" class="csharp-btn" style="background:#888">← Скасувати</a>
+				</div>
+			</div>
+		</div>
+
+		<script src="lessons.js"></script>
+		<script>
+			const params = new URLSearchParams(location.search);
+			const lessonId = params.get("lesson");
+
+			let lesson = lessonId ? SpellingStore.getById(lessonId) : null;
+			if (!lesson) {
+				lesson = SpellingStore.createEmpty();
+			} else {
+				// Глибока копія, щоб не мутувати збережені дані до натискання "Зберегти"
+				lesson = JSON.parse(JSON.stringify(lesson));
+			}
+			if (lesson.sentences.length === 0) {
+				lesson.sentences.push(SpellingStore.createEmptySentence());
+			}
+
+			const pageTitleEl = document.getElementById("pageTitle");
+			const lessonTitleEl = document.getElementById("lessonTitle");
+			const sentenceListEl = document.getElementById("sentenceList");
+			const addSentenceBtn = document.getElementById("addSentenceBtn");
+			const saveBtn = document.getElementById("saveBtn");
+			const saveErrorEl = document.getElementById("saveError");
+
+			pageTitleEl.textContent = lessonId ? "Редагувати урок" : "Новий урок";
+			lessonTitleEl.value = lesson.title;
+
+			function escapeAttr(str) {
+				const div = document.createElement("div");
+				div.textContent = str || "";
+				return div.innerHTML.replace(/"/g, "&quot;");
+			}
+
+			function escapeHtml(str) {
+				const div = document.createElement("div");
+				div.textContent = str;
+				return div.innerHTML;
+			}
+
+			// Рендер по символьної розкладки для одного речення: кожен символ —
+			// окрема клікабельна плитка, пропуски підсвічені зеленим.
+			function renderCharGrid(sentence, sentenceIndex) {
+				if (!sentence.text) return "";
+				const chars = sentence.text.split("");
+				return `
+				<div class="char-grid" data-chargrid="${sentenceIndex}">
+				${chars
+					.map((ch, i) => {
+						const isSpace = ch === " ";
+						const isBlank = sentence.blanks.includes(i);
+						const label = isSpace ? "␣" : escapeHtml(ch);
+						return `<button type="button" class="char-tile ${isSpace ? "is-space" : ""} ${isBlank ? "is-blank" : ""}" data-char-toggle="${sentenceIndex}:${i}" title="Символ ${i + 1}">${label}</button>`;
+					})
+				.join("")}
+			</div>
+			`;
+		}
+
+		function renderSentences() {
+			sentenceListEl.innerHTML = "";
+			lesson.sentences.forEach((sentence, i) => {
+				const card = document.createElement("div");
+				card.className = "sentence-card";
+				card.innerHTML = `
+				<div class="sentence-header">
+				<span class="sentence-number">Речення ${i + 1}</span>
+				<button type="button" class="sentence-remove" data-remove-sentence="${i}" aria-label="Видалити речення">✕</button>
+				</div>
+				<div>
+				<label class="field-label">Текст речення</label>
+				<input type="text" class="text-input" data-sentence-text="${i}" placeholder="Напр.: Не має часу" value="${escapeAttr(sentence.text)}">
+				<p class="blanks-hint">Клікни на символи нижче, щоб позначити пропуски</p>
+				</div>
+				${renderCharGrid(sentence, i)}
+				<div class="preview-line" data-preview="${i}"></div>
+				`;
+				sentenceListEl.appendChild(card);
+			});
+		updateAllPreviews();
+	}
+
+	function updateAllPreviews() {
+		lesson.sentences.forEach((sentence, i) => {
+			const previewEl = sentenceListEl.querySelector(`[data-preview="${i}"]`);
+			if (!previewEl) return;
+			previewEl.textContent = sentence.text
+			? `Перегляд: ${SpellingStore.previewWithBlanks(sentence)}`
+			: "";
+		});
+}
+
+sentenceListEl.addEventListener("input", (e) => {
+	const target = e.target;
+	if (target.dataset.sentenceText !== undefined) {
+		const i = parseInt(target.dataset.sentenceText, 10);
+		const oldLength = lesson.sentences[i].text.length;
+		lesson.sentences[i].text = target.value;
+		// Якщо текст змінився (не просто курсор пересунувся) — скидаємо
+		// пропуски, бо індекси символів більше не відповідають старій
+		// розмітці. Простіше й надійніше, ніж намагатись "перенести"
+		// позначки при редагуванні тексту посередині.
+		if (target.value.length !== oldLength) {
+			lesson.sentences[i].blanks = [];
+		}
+		renderSentences();
+		// Повертаємо фокус у поле вводу тексту після перерендеру
+		const input = sentenceListEl.querySelector(`[data-sentence-text="${i}"]`);
+		if (input) {
+			input.focus();
+			input.setSelectionRange(input.value.length, input.value.length);
+		}
+	}
+});
+
+sentenceListEl.addEventListener("click", (e) => {
+	const removeBtn = e.target.closest("[data-remove-sentence]");
+	const toggleBtn = e.target.closest("[data-char-toggle]");
+
+	if (removeBtn) {
+		const i = parseInt(removeBtn.dataset.removeSentence, 10);
+		if (lesson.sentences.length <= 1) {
+			saveErrorEl.textContent = "В уроці має лишитись хоча б одне речення.";
+			return;
+		}
+		lesson.sentences.splice(i, 1);
+		renderSentences();
+	} else if (toggleBtn) {
+		const [i, charIndex] = toggleBtn.dataset.charToggle.split(":").map(Number);
+		const sentence = lesson.sentences[i];
+		const pos = sentence.blanks.indexOf(charIndex);
+		if (pos >= 0) {
+			sentence.blanks.splice(pos, 1);
+		} else {
+			sentence.blanks.push(charIndex);
+		}
+		renderSentences();
+	}
+});
+
+addSentenceBtn.addEventListener("click", () => {
+	lesson.sentences.push(SpellingStore.createEmptySentence());
+	renderSentences();
+	sentenceListEl.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+function validate() {
+	if (!lessonTitleEl.value.trim()) {
+		return "Введи назву уроку.";
+	}
+	for (let i = 0; i < lesson.sentences.length; i++) {
+		const sentence = lesson.sentences[i];
+		if (!sentence.text.trim()) {
+			return `Речення ${i + 1}: введи текст.`;
+		}
+		if (sentence.blanks.length === 0) {
+			return `Речення ${i + 1}: познач хоча б один пропуск.`;
+		}
+	}
+	return null;
+}
+
+saveBtn.addEventListener("click", (e) => {
+	e.preventDefault();
+	lesson.title = lessonTitleEl.value.trim();
+	const error = validate();
+	if (error) {
+		saveErrorEl.textContent = error;
+		return;
+	}
+	saveErrorEl.textContent = "";
+	SpellingStore.upsert(lesson);
+	location.href = "index.html";
+});
+
+renderSentences();
+		</script>
+	</body>
+</html>
